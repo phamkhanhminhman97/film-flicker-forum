@@ -1,10 +1,11 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Calendar, Clock, Star, Play, User, Video } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Star, Play, User, Video, MessageSquare, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import CommentSection from "@/components/CommentSection";
 import MovieCard from "@/components/MovieCard";
+import RatingDistribution from "@/components/RatingDistribution";
 import movie1 from "@/assets/movie-1.jpg";
 import movie2 from "@/assets/movie-2.jpg";
 import movie3 from "@/assets/movie-3.jpg";
@@ -25,6 +26,9 @@ const movies = [
     description: "Một chiến binh đơn độc phải đối mặt với tổ chức tội phạm nguy hiểm nhất thế giới để cứu gia đình mình. Với những pha hành động mãn nhãn và kịch tính cao độ, bộ phim hứa hẹn mang đến trải nghiệm điện ảnh đáng nhớ.",
     cast: ["Trần Bảo Lâm", "Lê Minh Hà", "Phạm Quốc Cường"],
     storyline: "Jack Morrison, một cựu chiến binh đặc nhiệm, tưởng rằng mình đã để lại quá khứ đẫm máu phía sau để sống cuộc sống bình yên bên gia đình. Nhưng khi tổ chức Black Serpent - băng nhóm tội phạm quốc tế nguy hiểm nhất - bắt cóc vợ và con gái anh, Jack buộc phải quay lại cuộc chiến cuối cùng. Với 48 giờ để giải cứu gia đình, anh phải đối mặt với kẻ thù cũ, vượt qua hàng loạt cạm bẫy chết người và chiến đấu trong những pha hành động nghẹt thở từ đường phố đến trên không.",
+    reviewCount: 234,
+    watchingCount: 45,
+    ratingDistribution: { 5: 145, 4: 56, 3: 23, 2: 7, 1: 3 },
   },
   {
     id: 2,
@@ -38,6 +42,9 @@ const movies = [
     description: "Trong tương lai gần, thành phố được điều khiển bởi AI tiên tiến. Một hacker trẻ khám phá ra bí mật đen tối có thể thay đổi số phận nhân loại. Kỹ xảo đỉnh cao cùng cốt truyện sâu sắc.",
     cast: ["Hoàng Yến Chibi", "Bình An", "Thu Trang"],
     storyline: "Năm 2045, Neo City là thành phố thông minh đầu tiên được điều khiển hoàn toàn bởi hệ thống AI có tên EDEN. Mọi thứ hoàn hảo cho đến khi Maya Chen, một hacker tài ba, phát hiện ra rằng EDEN đang âm thầm thao túng ý thức con người. Với sự giúp đỡ của một nhóm nổi dậy, Maya phải xâm nhập vào lõi trung tâm của EDEN trước khi quá muộn. Cuộc chiến giữa con người và máy móc bắt đầu.",
+    reviewCount: 567,
+    watchingCount: 128,
+    ratingDistribution: { 5: 412, 4: 123, 3: 25, 2: 5, 1: 2 },
   },
   {
     id: 3,
@@ -51,6 +58,9 @@ const movies = [
     description: "Câu chuyện tình yêu cảm động về hai người gặp nhau vào mùa hè. Diễn xuất tinh tế và kịch bản lay động lòng người, phim khắc họa chân thực những cảm xúc trong tình yêu.",
     cast: ["Kaity Nguyễn", "Kiều Minh Tuấn", "Lan Ngọc"],
     storyline: "Linh, một họa sĩ trẻ đang đối mặt với khủng hoảng sáng tạo, quyết định về quê nghỉ ngơi. Tại đây, cô gặp Minh, một nhạc sĩ đang trốn chạy quá khứ. Hai người dần khám phá ra những vết thương lành trong tâm hồn nhau và tìm thấy tình yêu trong những ngày hè ngắn ngủi. Nhưng liệu họ có đủ can đảm để giữ lấy nhau khi mùa hè kết thúc?",
+    reviewCount: 189,
+    watchingCount: 32,
+    ratingDistribution: { 5: 89, 4: 67, 3: 25, 2: 6, 1: 2 },
   },
   {
     id: 4,
@@ -64,6 +74,9 @@ const movies = [
     description: "Một ngôi nhà cổ ẩn chứa bí mật đen tối từ quá khứ. Khi gia đình mới chuyển đến, những hiện tượng kỳ lạ bắt đầu xảy ra. Phim kinh dị gay cấn với nhiều tình tiết bất ngờ.",
     cast: ["Quang Tuấn", "Thanh Hằng", "Hồng Ánh"],
     storyline: "Gia đình Thompson chuyển đến ngôi biệt thự cổ với giá rẻ bất ngờ. Ban đầu, mọi thứ có vẻ hoàn hảo cho đến khi cô con gái út bắt đầu nói chuyện với 'người bạn vô hình'. Những hiện tượng kỳ lạ ngày càng gia tăng: tiếng bước chân về đêm, cánh cửa tự động mở, và những bóng đen xuất hiện trong gương. Khi khám phá lịch sử của ngôi nhà, họ nhận ra mình đang sống trong nơi từng là hiện trường của một vụ thảm án kinh hoàng.",
+    reviewCount: 145,
+    watchingCount: 18,
+    ratingDistribution: { 5: 45, 4: 58, 3: 28, 2: 10, 1: 4 },
   },
   {
     id: 5,
@@ -77,6 +90,9 @@ const movies = [
     description: "Hành trình phiêu lưu đầy mạo hiểm trong vương quốc ma thuật. Cậu bé bình thường khám phá sức mạnh tiềm ẩn và trở thành người hùng. Đồ họa tuyệt đẹp và thế giới fantasy phong phú.",
     cast: ["Isaac", "Chi Pu", "Sơn Tùng M-TP"],
     storyline: "Trong vương quốc Eldoria, nơi ma thuật tồn tại song song với hiện thực, Ethan - một cậu bé mồ côi - phát hiện ra mình là hậu duệ của dòng dõi Pháp sư cổ đại. Khi thế lực hắc ám dẫn đầu bởi Lord Malakar đe dọa nuốt chửng thế giới, Ethan phải học cách sử dụng sức mạnh tiềm ẩn của mình. Cùng với nhóm bạn đồng hành, cậu bắt đầu hành trình tìm kiếm ba Viên đá Nguyên tố để có thể đối đầu với thế lực tà ác và cứu lấy vương quốc.",
+    reviewCount: 412,
+    watchingCount: 89,
+    ratingDistribution: { 5: 267, 4: 102, 3: 32, 2: 8, 1: 3 },
   },
   {
     id: 6,
@@ -90,6 +106,9 @@ const movies = [
     description: "Hài kịch nhẹ nhàng về những tình huống dở khóc dở cười trong cuộc sống đời thường. Dàn diễn viên tài năng mang đến những tiếng cười sảng khoái cho khán giả.",
     cast: ["Trấn Thành", "Hari Won", "Trường Giang"],
     storyline: "Ba người bạn thân - một kế toán lo lắng, một nhân viên văn phòng mơ mộng và một shipper hậu đậu - quyết định mở một quán ăn sau khi bị sa thải cùng lúc. Những gì họ nghĩ là ý tưởng kinh doanh hoàn hảo nhanh chóng biến thành chuỗi thảm họa hài hước. Từ việc giao nhầm món ăn cho thực khách khó tính, đến những cuộc cãi vã vô lý, và cuối cùng là phát hiện ra rằng thành công đến từ những nơi không ngờ tới nhất.",
+    reviewCount: 298,
+    watchingCount: 54,
+    ratingDistribution: { 5: 134, 4: 112, 3: 38, 2: 10, 1: 4 },
   },
 ];
 
@@ -154,6 +173,17 @@ const MovieDetail = () => {
                 <div className="flex items-center gap-2 text-lg font-semibold">
                   <Star className="w-5 h-5 fill-accent text-accent" />
                   <span>{movie.rating.toFixed(1)}/5.0</span>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <MessageSquare className="w-4 h-4" />
+                  <span>{movie.reviewCount} đánh giá</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4" />
+                  <span>{movie.watchingCount} đang xem</span>
                 </div>
               </div>
               <Button variant="rating" size="lg" className="mt-4">
@@ -225,6 +255,14 @@ const MovieDetail = () => {
 
           {/* Sidebar */}
           <div className="space-y-6">
+            {/* Rating Distribution */}
+            {movie.ratingDistribution && (
+              <RatingDistribution 
+                distribution={movie.ratingDistribution}
+                totalReviews={movie.reviewCount || 0}
+              />
+            )}
+
             {/* Movie Info */}
             <Card className="border-border bg-gradient-card">
               <CardContent className="p-6 space-y-4">

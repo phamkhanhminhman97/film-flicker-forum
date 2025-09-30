@@ -1,7 +1,9 @@
-import { Film, TrendingUp, Flame, Clock, Trophy, Star } from "lucide-react";
+import { Film, TrendingUp, Flame, Clock, Trophy, Star, Users } from "lucide-react";
 import MovieCard from "@/components/MovieCard";
 import FeaturedMovie from "@/components/FeaturedMovie";
 import MovieSection from "@/components/MovieSection";
+import CommunityActivity from "@/components/CommunityActivity";
+import TopReviewers from "@/components/TopReviewers";
 import movie1 from "@/assets/movie-1.jpg";
 import movie2 from "@/assets/movie-2.jpg";
 import movie3 from "@/assets/movie-3.jpg";
@@ -10,12 +12,12 @@ import movie5 from "@/assets/movie-5.jpg";
 import movie6 from "@/assets/movie-6.jpg";
 
 const movies = [
-  { id: 1, title: "Chiến Binh Hành Động", poster: movie1, rating: 4.5, year: 2024, genre: "Hành động", description: "Một chiến binh đơn độc phải đối mặt với tổ chức tội phạm nguy hiểm nhất thế giới để cứu gia đình mình." },
-  { id: 2, title: "Thành Phố Tương Lai", poster: movie2, rating: 4.8, year: 2024, genre: "Sci-Fi", description: "Trong tương lai gần, thành phố được điều khiển bởi AI tiên tiến." },
-  { id: 3, title: "Trái Tim Mùa Hè", poster: movie3, rating: 4.2, year: 2024, genre: "Drama", description: "Câu chuyện tình yêu cảm động về hai người gặp nhau vào mùa hè." },
-  { id: 4, title: "Bóng Đêm Ẩn Giấu", poster: movie4, rating: 3.9, year: 2024, genre: "Horror", description: "Một ngôi nhà cổ ẩn chứa bí mật đen tối từ quá khứ." },
-  { id: 5, title: "Vương Quốc Phép Thuật", poster: movie5, rating: 4.6, year: 2024, genre: "Fantasy", description: "Hành trình phiêu lưu đầy mạo hiểm trong vương quốc ma thuật." },
-  { id: 6, title: "Cười Vỡ Bụng", poster: movie6, rating: 4.0, year: 2024, genre: "Comedy", description: "Hài kịch nhẹ nhàng về những tình huống dở khóc dở cười." },
+  { id: 1, title: "Chiến Binh Hành Động", poster: movie1, rating: 4.5, year: 2024, genre: "Hành động", description: "Một chiến binh đơn độc phải đối mặt với tổ chức tội phạm nguy hiểm nhất thế giới để cứu gia đình mình.", reviewCount: 234, watchingCount: 45 },
+  { id: 2, title: "Thành Phố Tương Lai", poster: movie2, rating: 4.8, year: 2024, genre: "Sci-Fi", description: "Trong tương lai gần, thành phố được điều khiển bởi AI tiên tiến.", reviewCount: 567, watchingCount: 128 },
+  { id: 3, title: "Trái Tim Mùa Hè", poster: movie3, rating: 4.2, year: 2024, genre: "Drama", description: "Câu chuyện tình yêu cảm động về hai người gặp nhau vào mùa hè.", reviewCount: 189, watchingCount: 32 },
+  { id: 4, title: "Bóng Đêm Ẩn Giấu", poster: movie4, rating: 3.9, year: 2024, genre: "Horror", description: "Một ngôi nhà cổ ẩn chứa bí mật đen tối từ quá khứ.", reviewCount: 145, watchingCount: 18 },
+  { id: 5, title: "Vương Quốc Phép Thuật", poster: movie5, rating: 4.6, year: 2024, genre: "Fantasy", description: "Hành trình phiêu lưu đầy mạo hiểm trong vương quốc ma thuật.", reviewCount: 412, watchingCount: 89 },
+  { id: 6, title: "Cười Vỡ Bụng", poster: movie6, rating: 4.0, year: 2024, genre: "Comedy", description: "Hài kịch nhẹ nhàng về những tình huống dở khóc dở cười.", reviewCount: 298, watchingCount: 54 },
 ];
 
 const trendingMovies = [...movies].sort((a, b) => b.rating - a.rating);
@@ -36,6 +38,7 @@ const Index = () => {
           </div>
           <nav className="hidden md:flex items-center gap-6">
             <a href="#trending" className="text-foreground/80 hover:text-primary transition-colors">Nổi bật</a>
+            <a href="#community" className="text-foreground/80 hover:text-primary transition-colors">Cộng đồng</a>
             <a href="#new" className="text-foreground/80 hover:text-primary transition-colors">Mới nhất</a>
             <a href="#top" className="text-foreground/80 hover:text-primary transition-colors">Top đánh giá</a>
           </nav>
@@ -67,6 +70,22 @@ const Index = () => {
             ))}
           </div>
         </MovieSection>
+
+        {/* Community Section */}
+        <section id="community" className="space-y-6">
+          <div className="flex items-center gap-3">
+            <Users className="w-8 h-8 text-primary" />
+            <h2 className="text-3xl font-bold">Cộng đồng</h2>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <CommunityActivity />
+            </div>
+            <div>
+              <TopReviewers />
+            </div>
+          </div>
+        </section>
 
         {/* Hot Movies Section */}
         <MovieSection
