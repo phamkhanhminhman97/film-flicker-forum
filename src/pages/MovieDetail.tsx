@@ -1,8 +1,10 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Calendar, Clock, Star, Play, User, Video, MessageSquare, Users } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Star, Play, User, Video, MessageSquare, Users, Bookmark, Share2, Heart } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import CommentSection from "@/components/CommentSection";
 import MovieCard from "@/components/MovieCard";
 import RatingDistribution from "@/components/RatingDistribution";
@@ -127,6 +129,8 @@ const movies = [
 const MovieDetail = () => {
   const { id } = useParams();
   const movie = movies.find((m) => m.id === Number(id));
+  const [isLiked, setIsLiked] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   if (!movie) {
     return (
@@ -144,158 +148,216 @@ const MovieDetail = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="relative h-[60vh] overflow-hidden">
+      <div className="relative h-[70vh] overflow-hidden">
         <div className="absolute inset-0">
           <img
             src={movie.poster}
             alt={movie.title}
-            className="w-full h-full object-cover blur-2xl scale-110 opacity-30"
+            className="w-full h-full object-cover blur-3xl scale-110 opacity-40"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/40" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-transparent to-background/40" />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
         
-        <div className="relative container mx-auto px-4 h-full flex items-end pb-12">
+        <div className="relative container mx-auto px-4 h-full flex items-end pb-16">
           <Link to="/">
-            <Button variant="ghost" className="absolute top-4 left-4">
+            <Button variant="ghost" className="absolute top-6 left-6 backdrop-blur-md bg-background/30 hover:bg-background/50 border border-border/50">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Quay lại
             </Button>
           </Link>
           
-          <div className="flex flex-col md:flex-row gap-8 items-end">
-            <img
-              src={movie.poster}
-              alt={movie.title}
-              className="w-48 h-72 object-cover rounded-lg shadow-2xl border-2 border-border"
-            />
-            <div className="flex-1 space-y-4 pb-4">
-              <h1 className="text-4xl md:text-5xl font-bold">{movie.title}</h1>
-              <div className="flex flex-wrap items-center gap-4 text-sm">
-                <Badge variant="outline" className="border-primary text-primary">
+          <div className="flex flex-col md:flex-row gap-8 items-end w-full">
+            <div className="relative group">
+              <img
+                src={movie.poster}
+                alt={movie.title}
+                className="w-56 h-80 object-cover rounded-xl shadow-elegant border-2 border-border/50 transition-transform group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+            <div className="flex-1 space-y-5 pb-4">
+              <div className="space-y-3">
+                <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent leading-tight">
+                  {movie.title}
+                </h1>
+                <p className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
+                  {movie.description}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3 text-sm">
+                <Badge variant="outline" className="border-primary/50 bg-primary/10 text-primary px-4 py-1.5 font-semibold">
                   {movie.genre}
                 </Badge>
-                <div className="flex items-center gap-1">
-                  <Calendar className="w-4 h-4" />
-                  <span>{movie.year}</span>
+                <div className="flex items-center gap-2 bg-muted/30 px-3 py-1.5 rounded-full">
+                  <Calendar className="w-4 h-4 text-primary" />
+                  <span className="font-medium">{movie.year}</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Clock className="w-4 h-4" />
-                  <span>{movie.duration}</span>
+                <div className="flex items-center gap-2 bg-muted/30 px-3 py-1.5 rounded-full">
+                  <Clock className="w-4 h-4 text-primary" />
+                  <span className="font-medium">{movie.duration}</span>
+                </div>
+                <div className="flex items-center gap-2 bg-muted/30 px-3 py-1.5 rounded-full">
+                  <MessageSquare className="w-4 h-4 text-primary" />
+                  <span className="font-medium">{movie.reviewCount} reviews</span>
+                </div>
+                <div className="flex items-center gap-2 bg-accent/20 px-3 py-1.5 rounded-full">
+                  <Users className="w-4 h-4 text-accent" />
+                  <span className="font-medium text-accent">{movie.watchingCount} đang xem</span>
                 </div>
               </div>
 
-              {/* Rating Scores */}
-              <div className="flex flex-wrap gap-3">
-                <Card className="border-border bg-gradient-to-br from-primary/10 to-primary/5 backdrop-blur-sm">
-                  <CardContent className="p-3 flex items-center gap-3">
-                    <div className="flex items-center gap-2">
-                      <Star className="w-5 h-5 fill-accent text-accent" />
-                      <div>
-                        <div className="text-2xl font-bold">{movie.rating.toFixed(1)}</div>
-                        <div className="text-xs text-muted-foreground">Cộng đồng</div>
-                      </div>
+              {/* Rating Scores - Redesigned */}
+              <div className="flex flex-wrap gap-4">
+                <Card className="border-border/50 bg-gradient-to-br from-primary/20 via-primary/10 to-transparent backdrop-blur-md shadow-elegant hover:shadow-soft transition-all hover:scale-105">
+                  <CardContent className="p-4 flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center">
+                      <Star className="w-6 h-6 fill-white text-white" />
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold">{movie.rating.toFixed(1)}</div>
+                      <div className="text-xs text-muted-foreground font-medium">Cộng đồng</div>
                     </div>
                   </CardContent>
                 </Card>
                 
-                <Card className="border-border bg-gradient-to-br from-yellow-500/10 to-yellow-500/5 backdrop-blur-sm">
-                  <CardContent className="p-3 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded bg-yellow-500 flex items-center justify-center font-bold text-sm">
+                <Card className="border-yellow-500/30 bg-gradient-to-br from-yellow-500/20 via-yellow-500/10 to-transparent backdrop-blur-md shadow-elegant hover:shadow-soft transition-all hover:scale-105">
+                  <CardContent className="p-4 flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-lg bg-yellow-500 flex items-center justify-center font-bold text-base shadow-lg">
                       IMDb
                     </div>
                     <div>
-                      <div className="text-2xl font-bold">{movie.imdbScore}</div>
-                      <div className="text-xs text-muted-foreground">/10</div>
+                      <div className="text-3xl font-bold">{movie.imdbScore}</div>
+                      <div className="text-xs text-muted-foreground font-medium">/10 Score</div>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card className="border-border bg-gradient-to-br from-green-500/10 to-green-500/5 backdrop-blur-sm">
-                  <CardContent className="p-3 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded bg-green-600 flex items-center justify-center font-bold text-sm text-white">
+                <Card className="border-green-500/30 bg-gradient-to-br from-green-500/20 via-green-500/10 to-transparent backdrop-blur-md shadow-elegant hover:shadow-soft transition-all hover:scale-105">
+                  <CardContent className="p-4 flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-lg bg-green-600 flex items-center justify-center font-bold text-base text-white shadow-lg">
                       MC
                     </div>
                     <div>
-                      <div className="text-2xl font-bold">{movie.metacriticScore}</div>
-                      <div className="text-xs text-muted-foreground">/100</div>
+                      <div className="text-3xl font-bold">{movie.metacriticScore}</div>
+                      <div className="text-xs text-muted-foreground font-medium">/100 Meta</div>
                     </div>
                   </CardContent>
                 </Card>
               </div>
               
-              <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <MessageSquare className="w-4 h-4" />
-                  <span>{movie.reviewCount} đánh giá</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4" />
-                  <span>{movie.watchingCount} đang xem</span>
-                </div>
+              {/* Action Buttons */}
+              <div className="flex flex-wrap gap-3 pt-2">
+                <Button variant="rating" size="lg" className="gap-2 shadow-elegant hover:shadow-soft transition-all">
+                  <Star className="w-5 h-5" />
+                  Đánh giá ngay
+                </Button>
+                
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="lg" className="gap-2 border-primary/50 hover:bg-primary/10">
+                      <Play className="w-5 h-5" />
+                      Xem Trailer
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-4xl">
+                    <DialogHeader>
+                      <DialogTitle>Trailer - {movie.title}</DialogTitle>
+                    </DialogHeader>
+                    <div className="relative aspect-video bg-muted rounded-lg flex items-center justify-center">
+                      <img 
+                        src={movie.poster} 
+                        alt={movie.title}
+                        className="absolute inset-0 w-full h-full object-cover opacity-40 blur-sm rounded-lg"
+                      />
+                      <div className="relative z-10 text-center space-y-4">
+                        <div className="w-20 h-20 rounded-full bg-primary/20 backdrop-blur-sm flex items-center justify-center mx-auto">
+                          <Play className="w-10 h-10 text-primary fill-primary" />
+                        </div>
+                        <p className="text-muted-foreground">Trailer sẽ được thêm vào sớm</p>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  onClick={() => setIsBookmarked(!isBookmarked)}
+                  className={`gap-2 ${isBookmarked ? 'bg-primary/10 border-primary text-primary' : ''}`}
+                >
+                  <Bookmark className={`w-5 h-5 ${isBookmarked ? 'fill-current' : ''}`} />
+                  {isBookmarked ? 'Đã lưu' : 'Lưu phim'}
+                </Button>
+
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  onClick={() => setIsLiked(!isLiked)}
+                  className={`gap-2 ${isLiked ? 'bg-red-500/10 border-red-500 text-red-500' : ''}`}
+                >
+                  <Heart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
+                  {isLiked ? 'Đã thích' : 'Yêu thích'}
+                </Button>
+
+                <Button variant="outline" size="lg" className="gap-2">
+                  <Share2 className="w-5 h-5" />
+                  Chia sẻ
+                </Button>
               </div>
-              <Button variant="rating" size="lg" className="mt-4">
-                <Star className="w-5 h-5 mr-2" />
-                Đánh giá phim
-              </Button>
             </div>
           </div>
         </div>
       </div>
 
       {/* Content Section */}
-      <div className="container mx-auto px-4 py-12 space-y-12">
-        {/* Trailer Section */}
-        <Card className="overflow-hidden border-border bg-gradient-card">
-          <CardContent className="p-0">
-            <div className="relative aspect-video bg-muted flex items-center justify-center group cursor-pointer">
-              <img 
-                src={movie.poster} 
-                alt={movie.title}
-                className="absolute inset-0 w-full h-full object-cover opacity-40 blur-sm"
-              />
-              <div className="relative z-10 text-center space-y-4">
-                <div className="w-20 h-20 rounded-full bg-primary/20 backdrop-blur-sm flex items-center justify-center group-hover:bg-primary/30 transition-all group-hover:scale-110">
-                  <Play className="w-10 h-10 text-primary fill-primary" />
-                </div>
-                <p className="text-xl font-semibold">Xem Trailer</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
+      <div className="container mx-auto px-4 py-16 space-y-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-10">
             {/* Synopsis */}
-            <div>
-              <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                <Video className="w-6 h-6 text-primary" />
-                Cốt truyện
-              </h2>
-              <p className="text-foreground/90 leading-relaxed text-lg">
-                {movie.storyline}
-              </p>
-            </div>
+            <Card className="border-border bg-gradient-card shadow-elegant overflow-hidden">
+              <CardContent className="p-8">
+                <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center">
+                    <Video className="w-5 h-5 text-white" />
+                  </div>
+                  Cốt truyện
+                </h2>
+                <div className="relative">
+                  <div className="absolute -left-4 top-0 w-1 h-full bg-gradient-to-b from-primary via-primary/50 to-transparent rounded-full" />
+                  <p className="text-foreground/90 leading-relaxed text-lg pl-4">
+                    {movie.storyline}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Cast */}
-            <div>
-              <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                <User className="w-6 h-6 text-primary" />
-                Diễn viên
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {movie.cast.map((actor, index) => (
-                  <Card key={index} className="border-border hover:border-primary transition-all">
-                    <CardContent className="p-4 text-center space-y-2">
-                      <div className="w-20 h-20 mx-auto rounded-full bg-gradient-primary flex items-center justify-center text-2xl font-bold">
-                        {actor.charAt(0)}
-                      </div>
-                      <p className="font-semibold">{actor}</p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
+            <Card className="border-border bg-gradient-card shadow-elegant overflow-hidden">
+              <CardContent className="p-8">
+                <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center">
+                    <User className="w-5 h-5 text-white" />
+                  </div>
+                  Diễn viên chính
+                </h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                  {movie.cast.map((actor, index) => (
+                    <Card key={index} className="border-border hover:border-primary transition-all group cursor-pointer bg-gradient-to-br from-muted/30 to-transparent hover:shadow-elegant">
+                      <CardContent className="p-6 text-center space-y-3">
+                        <div className="w-24 h-24 mx-auto rounded-full bg-gradient-primary flex items-center justify-center text-3xl font-bold text-white shadow-soft group-hover:scale-110 transition-transform">
+                          {actor.charAt(0)}
+                        </div>
+                        <p className="font-bold text-base group-hover:text-primary transition-colors">{actor}</p>
+                        <p className="text-xs text-muted-foreground">Diễn viên</p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
 
             <CommentSection />
           </div>
@@ -304,38 +366,45 @@ const MovieDetail = () => {
           <div className="space-y-6">
             {/* Rating Distribution */}
             {movie.ratingDistribution && (
-              <RatingDistribution 
-                distribution={movie.ratingDistribution}
-                totalReviews={movie.reviewCount || 0}
-              />
+              <div className="sticky top-6">
+                <RatingDistribution 
+                  distribution={movie.ratingDistribution}
+                  totalReviews={movie.reviewCount || 0}
+                />
+              </div>
             )}
 
             {/* Movie Info */}
-            <Card className="border-border bg-gradient-card">
+            <Card className="border-border bg-gradient-card shadow-elegant overflow-hidden">
+              <div className="bg-gradient-primary p-4">
+                <h3 className="text-xl font-bold text-white">Thông tin phim</h3>
+              </div>
               <CardContent className="p-6 space-y-4">
-                <h3 className="text-xl font-bold">Thông tin phim</h3>
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Đạo diễn</span>
-                    <span className="font-medium">{movie.director}</span>
+                <div className="space-y-4 text-sm">
+                  <div className="flex justify-between items-center p-3 bg-muted/30 rounded-lg">
+                    <span className="text-muted-foreground font-medium">Đạo diễn</span>
+                    <span className="font-bold">{movie.director}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Thể loại</span>
-                    <span className="font-medium">{movie.genre}</span>
+                  <div className="flex justify-between items-center p-3 bg-muted/30 rounded-lg">
+                    <span className="text-muted-foreground font-medium">Thể loại</span>
+                    <Badge variant="outline" className="border-primary text-primary">
+                      {movie.genre}
+                    </Badge>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Thời lượng</span>
-                    <span className="font-medium">{movie.duration}</span>
+                  <div className="flex justify-between items-center p-3 bg-muted/30 rounded-lg">
+                    <span className="text-muted-foreground font-medium">Thời lượng</span>
+                    <span className="font-bold">{movie.duration}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Năm</span>
-                    <span className="font-medium">{movie.year}</span>
+                  <div className="flex justify-between items-center p-3 bg-muted/30 rounded-lg">
+                    <span className="text-muted-foreground font-medium">Năm phát hành</span>
+                    <span className="font-bold">{movie.year}</span>
                   </div>
-                  <div className="flex justify-between items-center pt-2 border-t border-border">
-                    <span className="text-muted-foreground">Đánh giá</span>
+                  <div className="flex justify-between items-center p-4 bg-gradient-to-br from-primary/20 to-primary/5 rounded-lg border border-primary/30">
+                    <span className="text-muted-foreground font-medium">Đánh giá TB</span>
                     <div className="flex items-center gap-2">
-                      <Star className="w-5 h-5 fill-accent text-accent" />
-                      <span className="font-bold text-lg">{movie.rating.toFixed(1)}/5.0</span>
+                      <Star className="w-6 h-6 fill-accent text-accent" />
+                      <span className="font-bold text-2xl">{movie.rating.toFixed(1)}</span>
+                      <span className="text-muted-foreground">/5.0</span>
                     </div>
                   </div>
                 </div>
@@ -343,39 +412,57 @@ const MovieDetail = () => {
             </Card>
 
             {/* Similar Movies */}
-            <div>
-              <h3 className="text-xl font-bold mb-4">Phim tương tự</h3>
-              <div className="space-y-4">
-                {movies
-                  .filter(m => m.id !== movie.id && m.genre === movie.genre)
-                  .slice(0, 3)
-                  .map((similarMovie) => (
-                    <Link key={similarMovie.id} to={`/movie/${similarMovie.id}`}>
-                      <Card className="border-border hover:border-primary transition-all cursor-pointer group">
-                        <CardContent className="p-3 flex gap-3">
-                          <img 
-                            src={similarMovie.poster}
-                            alt={similarMovie.title}
-                            className="w-20 h-28 object-cover rounded transition-transform group-hover:scale-105"
-                          />
-                          <div className="flex-1 space-y-1">
-                            <h4 className="font-semibold line-clamp-2 group-hover:text-primary transition-colors">
-                              {similarMovie.title}
-                            </h4>
-                            <div className="flex items-center gap-1 text-sm">
-                              <Star className="w-3 h-3 fill-accent text-accent" />
-                              <span>{similarMovie.rating.toFixed(1)}</span>
-                            </div>
-                            <p className="text-xs text-muted-foreground">
-                              {similarMovie.year} • {similarMovie.genre}
-                            </p>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  ))}
+            <Card className="border-border bg-gradient-card shadow-elegant overflow-hidden">
+              <div className="bg-gradient-to-r from-primary/20 to-primary/5 p-4 border-b border-border">
+                <h3 className="text-xl font-bold">Phim tương tự</h3>
               </div>
-            </div>
+              <CardContent className="p-4">
+                <div className="space-y-3">
+                  {movies
+                    .filter(m => m.id !== movie.id && m.genre === movie.genre)
+                    .slice(0, 3)
+                    .map((similarMovie) => (
+                      <Link key={similarMovie.id} to={`/movie/${similarMovie.id}`}>
+                        <Card className="border-border hover:border-primary transition-all cursor-pointer group bg-gradient-to-br from-muted/20 to-transparent hover:shadow-soft">
+                          <CardContent className="p-3 flex gap-3">
+                            <div className="relative">
+                              <img 
+                                src={similarMovie.poster}
+                                alt={similarMovie.title}
+                                className="w-20 h-28 object-cover rounded-lg transition-transform group-hover:scale-105 shadow-soft"
+                              />
+                              <div className="absolute top-1 right-1 bg-accent text-white text-xs font-bold px-2 py-0.5 rounded">
+                                {similarMovie.rating.toFixed(1)}
+                              </div>
+                            </div>
+                            <div className="flex-1 space-y-2">
+                              <h4 className="font-bold line-clamp-2 group-hover:text-primary transition-colors text-sm leading-tight">
+                                {similarMovie.title}
+                              </h4>
+                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                <Calendar className="w-3 h-3" />
+                                <span>{similarMovie.year}</span>
+                                <span>•</span>
+                                <span>{similarMovie.genre}</span>
+                              </div>
+                              <div className="flex items-center gap-2 text-xs">
+                                <div className="flex items-center gap-1">
+                                  <MessageSquare className="w-3 h-3" />
+                                  <span>{similarMovie.reviewCount}</span>
+                                </div>
+                                <div className="flex items-center gap-1 text-accent">
+                                  <Users className="w-3 h-3" />
+                                  <span>{similarMovie.watchingCount}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    ))}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
