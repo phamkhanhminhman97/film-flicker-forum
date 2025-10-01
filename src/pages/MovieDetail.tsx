@@ -19,6 +19,8 @@ const movies = [
     title: "Chiến Binh Hành Động",
     poster: movie1,
     rating: 4.5,
+    imdbScore: 8.2,
+    metacriticScore: 78,
     year: 2024,
     genre: "Hành động",
     duration: "128 phút",
@@ -35,6 +37,8 @@ const movies = [
     title: "Thành Phố Tương Lai",
     poster: movie2,
     rating: 4.8,
+    imdbScore: 8.7,
+    metacriticScore: 85,
     year: 2024,
     genre: "Sci-Fi",
     duration: "145 phút",
@@ -51,6 +55,8 @@ const movies = [
     title: "Trái Tim Mùa Hè",
     poster: movie3,
     rating: 4.2,
+    imdbScore: 7.8,
+    metacriticScore: 72,
     year: 2024,
     genre: "Drama",
     duration: "110 phút",
@@ -67,6 +73,8 @@ const movies = [
     title: "Bóng Đêm Ẩn Giấu",
     poster: movie4,
     rating: 3.9,
+    imdbScore: 7.1,
+    metacriticScore: 65,
     year: 2024,
     genre: "Horror",
     duration: "95 phút",
@@ -83,6 +91,8 @@ const movies = [
     title: "Vương Quốc Phép Thuật",
     poster: movie5,
     rating: 4.6,
+    imdbScore: 8.4,
+    metacriticScore: 82,
     year: 2024,
     genre: "Fantasy",
     duration: "156 phút",
@@ -99,6 +109,8 @@ const movies = [
     title: "Cười Vỡ Bụng",
     poster: movie6,
     rating: 4.0,
+    imdbScore: 7.5,
+    metacriticScore: 68,
     year: 2024,
     genre: "Comedy",
     duration: "102 phút",
@@ -170,10 +182,45 @@ const MovieDetail = () => {
                   <Clock className="w-4 h-4" />
                   <span>{movie.duration}</span>
                 </div>
-                <div className="flex items-center gap-2 text-lg font-semibold">
-                  <Star className="w-5 h-5 fill-accent text-accent" />
-                  <span>{movie.rating.toFixed(1)}/5.0</span>
-                </div>
+              </div>
+
+              {/* Rating Scores */}
+              <div className="flex flex-wrap gap-3">
+                <Card className="border-border bg-gradient-to-br from-primary/10 to-primary/5 backdrop-blur-sm">
+                  <CardContent className="p-3 flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                      <Star className="w-5 h-5 fill-accent text-accent" />
+                      <div>
+                        <div className="text-2xl font-bold">{movie.rating.toFixed(1)}</div>
+                        <div className="text-xs text-muted-foreground">Cộng đồng</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="border-border bg-gradient-to-br from-yellow-500/10 to-yellow-500/5 backdrop-blur-sm">
+                  <CardContent className="p-3 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded bg-yellow-500 flex items-center justify-center font-bold text-sm">
+                      IMDb
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold">{movie.imdbScore}</div>
+                      <div className="text-xs text-muted-foreground">/10</div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-border bg-gradient-to-br from-green-500/10 to-green-500/5 backdrop-blur-sm">
+                  <CardContent className="p-3 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded bg-green-600 flex items-center justify-center font-bold text-sm text-white">
+                      MC
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold">{movie.metacriticScore}</div>
+                      <div className="text-xs text-muted-foreground">/100</div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
               
               <div className="flex items-center gap-6 text-sm text-muted-foreground">

@@ -91,22 +91,31 @@ const CommentSection = () => {
       </div>
 
       {/* Add Comment */}
-      <Card className="border-border">
+      <Card className="border-border bg-gradient-card shadow-elegant">
         <CardContent className="p-6 space-y-4">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">Đánh giá của bạn:</span>
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-lg">Viết đánh giá của bạn</h3>
+            {userRating > 0 && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <span>Đánh giá:</span>
+                <span className="text-accent font-bold">{userRating}/5</span>
+              </div>
+            )}
+          </div>
+          <div className="flex items-center gap-2 p-4 bg-muted/30 rounded-lg">
+            <span className="text-sm font-medium">Chọn số sao:</span>
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
                   key={star}
                   onClick={() => setUserRating(star)}
-                  className="transition-all hover:scale-110"
+                  className="transition-all hover:scale-125 active:scale-95"
                 >
                   <Star
-                    className={`w-6 h-6 ${
+                    className={`w-7 h-7 ${
                       star <= userRating
                         ? "fill-accent text-accent"
-                        : "text-muted-foreground"
+                        : "text-muted-foreground hover:text-accent/50"
                     }`}
                   />
                 </button>
@@ -114,14 +123,25 @@ const CommentSection = () => {
             </div>
           </div>
           <Textarea
-            placeholder="Chia sẻ suy nghĩ của bạn về bộ phim..."
+            placeholder="Chia sẻ suy nghĩ của bạn về bộ phim... Bạn thích điều gì? Diễn xuất ra sao? Cốt truyện có hấp dẫn không?"
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            className="min-h-[100px] bg-background border-border"
+            className="min-h-[120px] bg-background/50 border-border focus:border-primary transition-colors resize-none"
           />
-          <Button onClick={handleSubmit} variant="default" className="w-full sm:w-auto">
-            Gửi bình luận
-          </Button>
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-muted-foreground">
+              {newComment.length}/1000 ký tự
+            </span>
+            <Button 
+              onClick={handleSubmit} 
+              variant="default" 
+              disabled={!newComment.trim() || userRating === 0}
+              className="min-w-[120px]"
+            >
+              <MessageSquare className="w-4 h-4 mr-2" />
+              Đăng đánh giá
+            </Button>
+          </div>
         </CardContent>
       </Card>
 
@@ -148,19 +168,19 @@ const CommentSection = () => {
 
         <TabsContent value="helpful" className="space-y-4">
           {getSortedComments().map((comment) => (
-          <Card key={comment.id} className="border-border">
+          <Card key={comment.id} className="border-border hover:border-primary/50 transition-all bg-gradient-card shadow-soft hover:shadow-elegant group">
             <CardContent className="p-6">
               <div className="flex gap-4">
-                <Avatar>
-                  <AvatarFallback className="bg-primary text-primary-foreground">
+                <Avatar className="w-12 h-12 border-2 border-border group-hover:border-primary/30 transition-colors">
+                  <AvatarFallback className="bg-gradient-primary text-primary-foreground font-bold text-lg">
                     {comment.author.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
-                <div className="flex-1 space-y-2">
+                <div className="flex-1 space-y-3">
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="font-semibold">{comment.author}</p>
-                      <div className="flex items-center gap-2 mt-1">
+                      <p className="font-bold text-base">{comment.author}</p>
+                      <div className="flex items-center gap-3 mt-1.5">
                         <div className="flex gap-0.5">
                           {[...Array(5)].map((_, i) => (
                             <Star
@@ -173,17 +193,21 @@ const CommentSection = () => {
                             />
                           ))}
                         </div>
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs text-muted-foreground font-medium">
                           {comment.date}
                         </span>
                       </div>
                     </div>
                   </div>
-                  <p className="text-sm text-foreground/90">{comment.content}</p>
-                  <Button variant="ghost" size="sm" className="text-muted-foreground">
-                    <ThumbsUp className="w-4 h-4 mr-1" />
-                    {comment.likes}
-                  </Button>
+                  <p className="text-sm text-foreground/90 leading-relaxed bg-muted/20 p-3 rounded-lg">
+                    {comment.content}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary hover:bg-primary/10">
+                      <ThumbsUp className="w-4 h-4 mr-2" />
+                      Hữu ích ({comment.likes})
+                    </Button>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -193,19 +217,19 @@ const CommentSection = () => {
 
         <TabsContent value="recent" className="space-y-4">
           {getSortedComments().map((comment) => (
-          <Card key={comment.id} className="border-border">
+          <Card key={comment.id} className="border-border hover:border-primary/50 transition-all bg-gradient-card shadow-soft hover:shadow-elegant group">
             <CardContent className="p-6">
               <div className="flex gap-4">
-                <Avatar>
-                  <AvatarFallback className="bg-primary text-primary-foreground">
+                <Avatar className="w-12 h-12 border-2 border-border group-hover:border-primary/30 transition-colors">
+                  <AvatarFallback className="bg-gradient-primary text-primary-foreground font-bold text-lg">
                     {comment.author.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
-                <div className="flex-1 space-y-2">
+                <div className="flex-1 space-y-3">
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="font-semibold">{comment.author}</p>
-                      <div className="flex items-center gap-2 mt-1">
+                      <p className="font-bold text-base">{comment.author}</p>
+                      <div className="flex items-center gap-3 mt-1.5">
                         <div className="flex gap-0.5">
                           {[...Array(5)].map((_, i) => (
                             <Star
@@ -218,17 +242,21 @@ const CommentSection = () => {
                             />
                           ))}
                         </div>
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs text-muted-foreground font-medium">
                           {comment.date}
                         </span>
                       </div>
                     </div>
                   </div>
-                  <p className="text-sm text-foreground/90">{comment.content}</p>
-                  <Button variant="ghost" size="sm" className="text-muted-foreground">
-                    <ThumbsUp className="w-4 h-4 mr-1" />
-                    {comment.likes}
-                  </Button>
+                  <p className="text-sm text-foreground/90 leading-relaxed bg-muted/20 p-3 rounded-lg">
+                    {comment.content}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary hover:bg-primary/10">
+                      <ThumbsUp className="w-4 h-4 mr-2" />
+                      Hữu ích ({comment.likes})
+                    </Button>
+                  </div>
                 </div>
               </div>
             </CardContent>
