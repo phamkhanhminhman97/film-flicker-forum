@@ -92,24 +92,21 @@ const Index = () => {
           title="Phim Hot"
           icon={<Flame className="w-8 h-8 text-accent" />}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {movies.slice(0, 2).map((movie) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {movies.slice(0, 4).map((movie) => (
               <div key={movie.id} className="group relative overflow-hidden rounded-lg border border-border hover:border-primary transition-all duration-300 cursor-pointer hover:shadow-elegant">
-                <div className="flex flex-col md:flex-row gap-4 p-4 bg-gradient-card">
-                  <img
-                    src={movie.poster}
-                    alt={movie.title}
-                    className="w-full md:w-40 h-56 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
-                  />
-                  <div className="flex-1 space-y-3">
-                    <h3 className="text-2xl font-bold group-hover:text-primary transition-colors">{movie.title}</h3>
-                    <div className="flex items-center gap-2">
-                      <Star className="w-5 h-5 fill-accent text-accent" />
-                      <span className="text-lg font-semibold">{movie.rating.toFixed(1)}/5.0</span>
-                      <span className="text-muted-foreground">•</span>
-                      <span className="text-muted-foreground">{movie.year}</span>
-                    </div>
-                    <p className="text-foreground/80 line-clamp-3">{movie.description}</p>
+                <img
+                  src={movie.poster}
+                  alt={movie.title}
+                  className="w-full h-96 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                  <h3 className="text-xl font-bold group-hover:text-primary transition-colors">{movie.title}</h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Star className="w-4 h-4 fill-accent text-accent" />
+                    <span className="font-semibold">{movie.rating.toFixed(1)}</span>
+                    <span className="text-xs text-muted-foreground">• {movie.year}</span>
                   </div>
                 </div>
               </div>
